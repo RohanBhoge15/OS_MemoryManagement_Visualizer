@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}OS Memory Management Simulator{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-memory"></i>
+                <span>OS Memory Simulator</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/" class="nav-link {% block home_active %}{% endblock %}">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/continuous" class="nav-link {% block continuous_active %}{% endblock %}">
+                        <i class="fas fa-th-large"></i> Continuous Allocation
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/paging" class="nav-link {% block paging_active %}{% endblock %}">
+                        <i class="fas fa-table"></i> Paging & Segmentation
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/page-replacement" class="nav-link {% block page_replacement_active %}{% endblock %}">
+                        <i class="fas fa-sync-alt"></i> Page Replacement
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/virtual-memory" class="nav-link {% block virtual_memory_active %}{% endblock %}">
+                        <i class="fas fa-hdd"></i> Virtual Memory
+                    </a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; Built with ❤️ By Rohan,Behramm and Bhavya</p>
+        </div>
+    </footer>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="spinner-overlay" style="display: none;">
+        <div class="spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

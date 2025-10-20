@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Page Replacement - OS Memory Simulator{% endblock %}
+{% block page_replacement_active %}active{% endblock %}
+
+{% block content %}
+<div class="simulator-container">
+    <div class="simulator-header">
+        <h1><i class="fas fa-sync-alt"></i> Page Replacement Algorithms</h1>
+        <p>Simulate and compare FIFO, LRU, LFU, and Optimal page replacement algorithms</p>
+    </div>
+
+    <div class="simulator-content">
+        <!-- Input Panel -->
+        <div class="input-panel">
+            <h2><i class="fas fa-cog"></i> Configuration</h2>
+            
+            <div class="form-group">
+                <label for="algorithm">
+                    <i class="fas fa-brain"></i> Algorithm
+                </label>
+                <select id="algorithm" class="form-control">
+                    <option value="fifo">FIFO (First In First Out)</option>
+                    <option value="lru">LRU (Least Recently Used)</option>
+                    <option value="lfu">LFU (Least Frequently Used)</option>
+                    <option value="optimal">Optimal (Belady's)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="frameCount">
+                    <i class="fas fa-table-cells"></i> Number of Frames
+                </label>
+                <input type="number" id="frameCount" class="form-control" value="3" min="1" max="10">
+            </div>
+
+            <div class="form-group">
+                <label for="referenceString">
+                    <i class="fas fa-list-ol"></i> Reference String (comma-separated page numbers)
+                </label>
+                <input type="text" id="referenceString" class="form-control" 
+                       placeholder="e.g., 7,0,1,2,0,3,0,4,2,3,0,3,2,1,2,0,1,7,0,1">
+                <small class="form-hint">Enter page numbers separated by commas</small>
+            </div>
+
+            <div class="button-group">
+                <button id="loadSampleBtn" class="btn btn-secondary">
+                    <i class="fas fa-database"></i> Load Sample Data
+                </button>
+                <button id="simulateBtn" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Run Simulation
+                </button>
+                <button id="compareBtn" class="btn btn-success">
+                    <i class="fas fa-balance-scale"></i> Compare All Algorithms
+                </button>
+                <button id="clearBtn" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel">
+            <h2><i class="fas fa-chart-bar"></i> Results</h2>
+            
+            <div id="metricsDisplay" class="metrics-display" style="display: none;">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #4CAF50;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Page Hits</span>
+                            <span class="metric-value" id="pageHitsValue">0</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #F44336;">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Page Faults</span>
+                            <span class="metric-value" id="pageFaultsValue">0</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #2196F3;">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Hit Ratio</span>
+                            <span class="metric-value" id="hitRatioValue">0%</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #FF9800;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Execution Time</span>
+                            <span class="metric-value" id="execTimeValue">0 µs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="visualizationDisplay" class="visualization-display" style="display: none;">
+                <h3>Algorithm Visualization</h3>
+                <div class="chart-container">
+                    <img id="chartImage" src="" alt="Page Replacement Chart">
+                </div>
+            </div>
+
+            <div id="executionTrace" class="execution-trace" style="display: none;">
+                <h3>Step-by-Step Execution</h3>
+                <div class="table-responsive">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Step</th>
+                                <th>Page Reference</th>
+                                <th>Frame State</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="executionTraceBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="comparisonResults" class="comparison-results" style="display: none;">
+                <h3>Algorithm Comparison</h3>
+                <div class="best-algorithm-banner" id="bestAlgorithmBanner" style="display: none;">
+                    <i class="fas fa-trophy"></i>
+                    <span>Best Algorithm: <strong id="bestAlgorithmName"></strong></span>
+                </div>
+                <div class="chart-container">
+                    <img id="comparisonChart" src="" alt="Comparison Chart">
+                </div>
+                <div class="table-responsive">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Page Faults</th>
+                                <th>Page Hits</th>
+                                <th>Hit Ratio (%)</th>
+                                <th>Fault Ratio (%)</th>
+                                <th>Execution Time (µs)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="comparison-insights">
+                    <h4><i class="fas fa-lightbulb"></i> Insights</h4>
+                    <div id="insightsContent" class="insights-content">
+                        <!-- Insights will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/page_replacement.js') }}"></script>
+{% endblock %}

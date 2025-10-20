@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Continuous Memory Allocation - OS Memory Simulator{% endblock %}
+{% block continuous_active %}active{% endblock %}
+
+{% block content %}
+<div class="simulator-container">
+    <div class="simulator-header">
+        <h1><i class="fas fa-th-large"></i> Continuous Memory Allocation</h1>
+        <p>Simulate and compare First Fit, Best Fit, and Worst Fit allocation algorithms</p>
+    </div>
+
+    <div class="simulator-content">
+        <!-- Input Panel -->
+        <div class="input-panel">
+            <h2><i class="fas fa-cog"></i> Configuration</h2>
+            
+            <div class="form-group">
+                <label for="memorySize">
+                    <i class="fas fa-memory"></i> Total Memory Size (bytes)
+                </label>
+                <input type="number" id="memorySize" class="form-control" value="1000" min="100" max="10000">
+            </div>
+
+            <div class="form-group">
+                <label for="partitionType">
+                    <i class="fas fa-layer-group"></i> Partition Type
+                </label>
+                <select id="partitionType" class="form-control">
+                    <option value="variable">Variable Partitioning</option>
+                    <option value="fixed">Fixed Partitioning</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="algorithm">
+                    <i class="fas fa-brain"></i> Algorithm
+                </label>
+                <select id="algorithm" class="form-control">
+                    <option value="first_fit">First Fit</option>
+                    <option value="best_fit">Best Fit</option>
+                    <option value="worst_fit">Worst Fit</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-tasks"></i> Processes
+                    <button type="button" class="btn-small" id="addProcessBtn">
+                        <i class="fas fa-plus"></i> Add Process
+                    </button>
+                </label>
+                <div id="processList" class="process-list">
+                    <!-- Processes will be added dynamically -->
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="loadSampleBtn" class="btn btn-secondary">
+                    <i class="fas fa-database"></i> Load Sample Data
+                </button>
+                <button id="simulateBtn" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Run Simulation
+                </button>
+                <button id="compareBtn" class="btn btn-success">
+                    <i class="fas fa-balance-scale"></i> Compare All Algorithms
+                </button>
+                <button id="clearBtn" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Clear
+                </button>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel">
+            <h2><i class="fas fa-chart-bar"></i> Results</h2>
+            
+            <div id="metricsDisplay" class="metrics-display" style="display: none;">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #4CAF50;">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Memory Utilization</span>
+                            <span class="metric-value" id="utilizationValue">0%</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #FF9800;">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Internal Fragmentation</span>
+                            <span class="metric-value" id="internalFragValue">0 bytes</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #F44336;">
+                            <i class="fas fa-border-none"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">External Fragmentation</span>
+                            <span class="metric-value" id="externalFragValue">0 bytes</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #2196F3;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Allocated Processes</span>
+                            <span class="metric-value" id="allocatedCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="visualizationDisplay" class="visualization-display" style="display: none;">
+                <h3>Memory Allocation Visualization</h3>
+                <div class="chart-container">
+                    <img id="chartImage" src="" alt="Memory Allocation Chart">
+                </div>
+            </div>
+
+            <div id="allocationDetails" class="allocation-details" style="display: none;">
+                <h3>Allocation Details</h3>
+                <div class="table-responsive">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Process ID</th>
+                                <th>Size (bytes)</th>
+                                <th>Start Address</th>
+                                <th>End Address</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allocationTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="comparisonResults" class="comparison-results" style="display: none;">
+                <h3>Algorithm Comparison</h3>
+                <div class="best-algorithm-banner" id="bestAlgorithmBanner" style="display: none;">
+                    <i class="fas fa-trophy"></i>
+                    <span>Best Algorithm: <strong id="bestAlgorithmName"></strong></span>
+                </div>
+                <div class="chart-container">
+                    <img id="comparisonChart" src="" alt="Comparison Chart">
+                </div>
+                <div class="table-responsive">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Algorithm</th>
+                                <th>Memory Utilization (%)</th>
+                                <th>Internal Fragmentation</th>
+                                <th>External Fragmentation</th>
+                                <th>Total Fragmentation</th>
+                                <th>Allocated</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/continuous.js') }}"></script>
+{% endblock %}

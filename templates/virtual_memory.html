@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}Virtual Memory - OS Memory Simulator{% endblock %}
+{% block virtual_memory_active %}active{% endblock %}
+
+{% block content %}
+<div class="simulator-container">
+    <div class="simulator-header">
+        <h1><i class="fas fa-hdd"></i> Virtual Memory Simulation</h1>
+        <p>Simulate virtual memory management with address translation and page table management</p>
+    </div>
+
+    <div class="simulator-content">
+        <!-- Input Panel -->
+        <div class="input-panel">
+            <h2><i class="fas fa-cog"></i> Configuration</h2>
+            
+            <div class="form-group">
+                <label for="virtualSize">
+                    <i class="fas fa-desktop"></i> Virtual Memory Size (bytes)
+                </label>
+                <select id="virtualSize" class="form-control">
+                    <option value="16384">16 KB</option>
+                    <option value="32768">32 KB</option>
+                    <option value="65536" selected>64 KB</option>
+                    <option value="131072">128 KB</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="physicalSize">
+                    <i class="fas fa-memory"></i> Physical Memory Size (bytes)
+                </label>
+                <select id="physicalSize" class="form-control">
+                    <option value="4096">4 KB</option>
+                    <option value="8192">8 KB</option>
+                    <option value="16384" selected>16 KB</option>
+                    <option value="32768">32 KB</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pageSize">
+                    <i class="fas fa-table-cells"></i> Page Size (bytes)
+                </label>
+                <select id="pageSize" class="form-control">
+                    <option value="1024">1 KB</option>
+                    <option value="2048">2 KB</option>
+                    <option value="4096" selected>4 KB</option>
+                    <option value="8192">8 KB</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <i class="fas fa-route"></i> Access Pattern
+                    <button type="button" class="btn-small" id="addAccessBtn">
+                        <i class="fas fa-plus"></i> Add Access
+                    </button>
+                    <button type="button" class="btn-small" id="generateRandomBtn">
+                        <i class="fas fa-random"></i> Generate Random
+                    </button>
+                </label>
+                <div id="accessPatternList" class="access-pattern-list">
+                    <!-- Access patterns will be added dynamically -->
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="loadSampleBtn" class="btn btn-secondary">
+                    <i class="fas fa-database"></i> Load Sample Data
+                </button>
+                <button id="simulateBtn" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Run Simulation
+                </button>
+                <button id="clearBtn" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Clear
+                </button>
+            </div>
+
+            <!-- Address Translation Tool -->
+            <div class="address-translator">
+                <h3><i class="fas fa-exchange-alt"></i> Address Translation Tool</h3>
+                <div class="form-group">
+                    <label for="logicalAddress">Logical Address (decimal)</label>
+                    <input type="number" id="logicalAddress" class="form-control" placeholder="e.g., 8192" min="0">
+                </div>
+                <button id="translateBtn" class="btn btn-info">
+                    <i class="fas fa-calculator"></i> Translate Address
+                </button>
+                <div id="translationResult" class="translation-result" style="display: none;">
+                    <!-- Translation result will be shown here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel">
+            <h2><i class="fas fa-chart-bar"></i> Results</h2>
+            
+            <div id="metricsDisplay" class="metrics-display" style="display: none;">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #4CAF50;">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Page Hits</span>
+                            <span class="metric-value" id="pageHitsValue">0</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #F44336;">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Page Faults</span>
+                            <span class="metric-value" id="pageFaultsValue">0</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #2196F3;">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Hit Rate</span>
+                            <span class="metric-value" id="hitRateValue">0%</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #FF9800;">
+                            <i class="fas fa-save"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Disk Writes</span>
+                            <span class="metric-value" id="diskWritesValue">0</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #9C27B0;">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Effective Access Time</span>
+                            <span class="metric-value" id="eatValue">0 ns</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon" style="background: #00BCD4;">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="metric-info">
+                            <span class="metric-label">Total Accesses</span>
+                            <span class="metric-value" id="totalAccessesValue">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="visualizationDisplay" class="visualization-display" style="display: none;">
+                <h3>Virtual Memory Visualization</h3>
+                <div class="chart-container">
+                    <img id="chartImage" src="" alt="Virtual Memory Chart">
+                </div>
+            </div>
+
+            <div id="pageTableDisplay" class="table-display" style="display: none;">
+                <h3>Page Table (Pages in Memory)</h3>
+                <div class="table-responsive">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Page Number</th>
+                                <th>Frame Number</th>
+                                <th>Valid</th>
+                                <th>Dirty</th>
+                                <th>Referenced</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pageTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="accessLogDisplay" class="table-display" style="display: none;">
+                <h3>Access Log</h3>
+                <div class="table-responsive">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Step</th>
+                                <th>Logical Address</th>
+                                <th>Page Number</th>
+                                <th>Offset</th>
+                                <th>Frame Number</th>
+                                <th>Physical Address</th>
+                                <th>Type</th>
+                                <th>Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="accessLogBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/virtual_memory.js') }}"></script>
+{% endblock %}

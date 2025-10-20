@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Home - OS Memory Management Simulator{% endblock %}
+{% block home_active %}active{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <div class="hero-section">
+        <h1 class="hero-title">
+            <i class="fas fa-memory"></i>
+            OS Memory Management Simulator
+        </h1>
+        <p class="hero-subtitle">
+            Interactive visualization and comparison of memory management algorithms
+        </p>
+    </div>
+
+    <div class="modules-grid">
+        <!-- Continuous Memory Allocation Module -->
+        <div class="module-card">
+            <div class="module-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <i class="fas fa-th-large"></i>
+            </div>
+            <h2 class="module-title">Continuous Memory Allocation</h2>
+            <p class="module-description">
+                Simulate First Fit, Best Fit, and Worst Fit algorithms with both fixed and variable partitioning.
+                Visualize memory maps and compare fragmentation metrics.
+            </p>
+            <ul class="module-features">
+                <li><i class="fas fa-check"></i> First Fit, Best Fit, Worst Fit</li>
+                <li><i class="fas fa-check"></i> Fixed & Variable Partitioning</li>
+                <li><i class="fas fa-check"></i> Fragmentation Analysis</li>
+                <li><i class="fas fa-check"></i> Memory Utilization Metrics</li>
+            </ul>
+            <a href="/continuous" class="module-btn">
+                Launch Module <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <!-- Paging and Segmentation Module -->
+        <div class="module-card">
+            <div class="module-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <i class="fas fa-table"></i>
+            </div>
+            <h2 class="module-title">Paging & Segmentation</h2>
+            <p class="module-description">
+                Explore paging and segmentation techniques. Visualize page tables, segment tables, and logical to physical address mapping.
+            </p>
+            <ul class="module-features">
+                <li><i class="fas fa-check"></i> Paging Simulation</li>
+                <li><i class="fas fa-check"></i> Segmentation Simulation</li>
+                <li><i class="fas fa-check"></i> Address Translation</li>
+                <li><i class="fas fa-check"></i> Comparative Analysis</li>
+            </ul>
+            <a href="/paging" class="module-btn">
+                Launch Module <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <!-- Page Replacement Algorithms Module -->
+        <div class="module-card">
+            <div class="module-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <i class="fas fa-sync-alt"></i>
+            </div>
+            <h2 class="module-title">Page Replacement Algorithms</h2>
+            <p class="module-description">
+                Compare FIFO, LRU, LFU, and Optimal page replacement algorithms. Analyze hit ratios, page faults, and execution efficiency.
+            </p>
+            <ul class="module-features">
+                <li><i class="fas fa-check"></i> FIFO, LRU, LFU, Optimal</li>
+                <li><i class="fas fa-check"></i> Hit/Fault Ratio Analysis</li>
+                <li><i class="fas fa-check"></i> Step-by-step Execution</li>
+                <li><i class="fas fa-check"></i> Algorithm Comparison</li>
+            </ul>
+            <a href="/page-replacement" class="module-btn">
+                Launch Module <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <!-- Virtual Memory Module -->
+        <div class="module-card">
+            <div class="module-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <i class="fas fa-hdd"></i>
+            </div>
+            <h2 class="module-title">Virtual Memory</h2>
+            <p class="module-description">
+                Simulate virtual memory management with logical to physical address translation, page tables, and effective access time calculation.
+            </p>
+            <ul class="module-features">
+                <li><i class="fas fa-check"></i> Address Translation</li>
+                <li><i class="fas fa-check"></i> Page Table Management</li>
+                <li><i class="fas fa-check"></i> Access Pattern Simulation</li>
+                <li><i class="fas fa-check"></i> EAT Calculation</li>
+            </ul>
+            <a href="/virtual-memory" class="module-btn">
+                Launch Module <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <h2 class="section-title">Key Features</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Interactive Visualizations</h3>
+                <p>Real-time graphs and charts using Matplotlib for comprehensive analysis</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-sliders-h"></i>
+                </div>
+                <h3>Customizable Inputs</h3>
+                <p>Modify parameters and see instant results with dynamic simulations</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <h3>Algorithm Comparison</h3>
+                <p>Compare multiple algorithms side-by-side with highlighted best performers</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h3>Sample Data</h3>
+                <p>Pre-loaded examples for quick testing and learning</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
